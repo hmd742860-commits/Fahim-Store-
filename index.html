@@ -1,0 +1,216 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#101512">
+<title>Fahim Store</title>
+
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #101512;
+  --card: #202923;
+  --green: #8be28c;
+  --muted: #aab7ac;
+}
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: #fff;
+  font-family: Arial, sans-serif;
+}
+header {
+  padding: 22px 18px;
+  background: #18221b;
+  border-bottom: 1px solid #2b392e;
+}
+h1 { margin: 0; font-size: 27px; }
+header p { color: var(--muted); margin-bottom: 0; }
+
+main {
+  max-width: 760px;
+  margin: auto;
+  padding: 18px;
+}
+input, select {
+  width: 100%;
+  padding: 13px;
+  margin-bottom: 12px;
+  border: 1px solid #39463b;
+  border-radius: 12px;
+  background: var(--card);
+  color: white;
+  font-size: 16px;
+}
+h2 { font-size: 19px; margin-top: 24px; }
+
+.app {
+  display: flex;
+  align-items: center;
+  gap: 13px;
+  background: var(--card);
+  border: 1px solid #303c32;
+  border-radius: 16px;
+  padding: 14px;
+  margin: 12px 0;
+}
+.app-icon {
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+  display: grid;
+  place-items: center;
+  border-radius: 14px;
+  background: #304536;
+  color: var(--green);
+  font-size: 23px;
+  font-weight: bold;
+}
+.info { flex: 1; min-width: 0; }
+.info h3 { margin: 0 0 5px; }
+.info p { color: var(--muted); font-size: 13px; margin: 4px 0; }
+
+.download {
+  display: inline-block;
+  background: var(--green);
+  color: #102416;
+  text-decoration: none;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-weight: bold;
+  font-size: 13px;
+}
+footer {
+  padding: 24px 12px;
+  color: var(--muted);
+  text-align: center;
+  font-size: 13px;
+}
+</style>
+</head>
+
+<body>
+<header>
+  <h1>🟢 Fahim Store</h1>
+  <p>Discover apps. Download your favorites.</p>
+</header>
+
+<main>
+  <input
+    id="search"
+    type="search"
+    placeholder="Search apps and games..."
+    aria-label="Search apps"
+  >
+
+  <select id="category" aria-label="Choose category">
+    <option value="All">All categories</option>
+    <option value="Games">Games</option>
+    <option value="Tools">Tools</option>
+    <option value="Education">Education</option>
+    <option value="Photography">Photography</option>
+  </select>
+
+  <h2>Explore Apps</h2>
+  <div id="apps"></div>
+</main>
+
+<footer>
+  Fahim Store · Download responsibly
+</footer>
+
+<script>
+const appList = [
+  {
+    name: "My First App",
+    category: "Tools",
+    version: "1.0",
+    size: "Add file size",
+    icon: "A",
+    description: "Your app description goes here.",
+    url: ""
+  },
+  {
+    name: "My First Game",
+    category: "Games",
+    version: "1.0",
+    size: "Add file size",
+    icon: "G",
+    description: "Your game description goes here.",
+    url: ""
+  }
+];
+
+const apps = document.getElementById("apps");
+const search = document.getElementById("search");
+const category = document.getElementById("category");
+
+function renderApps() {
+  const q = search.value.trim().toLowerCase();
+  const cat = category.value;
+
+  const results = appList.filter(app =>
+    (app.name + " " + app.category + " " +
+     app.description).toLowerCase().includes(q) &&
+    (cat === "All" || app.category === cat)
+  );
+
+  apps.replaceChildren();
+
+  if (!results.length) {
+    apps.textContent = "No apps found.";
+    return;
+  }
+
+  results.forEach(app => {
+    const card = document.createElement("article");
+    card.className = "app";
+
+    const icon = document.createElement("div");
+    icon.className = "app-icon";
+    icon.textContent = app.icon;
+
+    const info = document.createElement("div");
+    info.className = "info";
+
+    const title = document.createElement("h3");
+    title.textContent = app.name;
+
+    const detail = document.createElement("p");
+    detail.textContent =
+      app.category + " · Version " + app.version;
+
+    const size = document.createElement("p");
+    size.textContent = app.size;
+
+    info.append(title, detail, size);
+    card.append(icon, info);
+
+    if (app.url.startsWith("https://")) {
+      const link = document.createElement("a");
+      link.className = "download";
+      link.href = app.url;
+      link.textContent = "Download";
+      link.rel = "noopener";
+      card.append(link);
+    } else {
+      const note = document.createElement("span");
+      note.className = "download";
+      note.textContent = "Coming Soon";
+      card.append(note);
+    }
+
+    apps.append(card);
+  });
+}
+
+search.addEventListener("input", renderApps);
+category.addEventListener("change", renderApps);
+renderApps();
+</script>
+</body>
+</html>
